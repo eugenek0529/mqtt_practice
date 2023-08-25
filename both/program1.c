@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "/opt/homebrew/include/mosquitto.h"
 #include <string.h>
 
@@ -8,7 +9,7 @@ void on_connect(struct mosquitto *sub, void *obj, int rc2)
     printf("on_connect function is called\n");
     if(rc2)
     {
-        printf("Failed with result code: %d\n",rc2);
+        printf("Failed with result code: %d\n", rc2);
     }
     mosquitto_subscribe(sub,NULL, "topic",0);
 }
@@ -34,7 +35,7 @@ int main()
     sub = mosquitto_new("subscribe",true,NULL);
 
     //connect both objs and check for both obj connection
-    rc1 = msoquitto_connect(pub,"localhost",1883,60);
+    rc1 = mosquitto_connect(pub,"localhost",1883,60);
     rc2 = mosquitto_connect(sub,"localhost",1883,60);
 
     if(rc1 || rc2)
@@ -54,7 +55,7 @@ int main()
     // 
     int session; // 1 - keep, 0 - end
     int quit;
-    int role = 0; // 0 - pub, 1 - sub
+    int role; // 0 - pub, 1 - sub
 
     // pub variables
     const char *topic = "choice";
@@ -68,9 +69,13 @@ int main()
     do{
         printf("This is start of a new session\n");
         printf("Please choose your role: 0) pub 1) sub: ");
+        scanf("%d", &role);
+        printf("Key check %d\n", role);
+        /*
         do {
             scanf("%d", &role);
         } while ((role != 0) && (role != 1));
+        */
 
         // now the role is choosed
         do{
@@ -100,7 +105,7 @@ int main()
             else if(role == 1)
             {
                 // sub
-                
+
 
             }
 
@@ -108,7 +113,7 @@ int main()
             role++;
             role = role % 2;
             printf("\n\n single pub/sub ended, 0 to continue, 1 to stop: ");
-            scanf("%quit",&quit);
+            scanf("%d",&quit);
         } while (quit != 1);
         
 
