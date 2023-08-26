@@ -84,7 +84,7 @@ int main()
             {
                 // pub
                 printf("Please enter your choice: " );
-                scanf("%c",payload);
+                scanf("%s",payload);
                 
                 payloadLength = strlen(payload);
 
