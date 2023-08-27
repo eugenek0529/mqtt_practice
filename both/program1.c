@@ -83,10 +83,19 @@ int main()
             if(role == 0)
             {
                 // pub
+                payload = (char *)malloc(5 * sizeof(char));
+                if(payload == NULL)
+                {
+                    printf("Failed to allocate heap sapce for payload\n");
+                    return 1;
+                }
+                
                 printf("Please enter your choice: " );
                 scanf("%s",payload);
                 
                 payloadLength = strlen(payload);
+
+                printf("%d\n", payloadLength);
 
                 published = mosquitto_publish(pub,NULL,topic,payloadLength,payload,qos,retain);
 
@@ -100,6 +109,7 @@ int main()
                     printf("Message published successfully\n");
                     continue;
                 }
+                free(payload);
 
             }
             else if(role == 1)
