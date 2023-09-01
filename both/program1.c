@@ -14,7 +14,7 @@ void on_connect(struct mosquitto *sub, void *obj, int rc2)
     mosquitto_subscribe(sub,NULL, "topic",0);
 }
 
-void msg_sub(struct mosquitto *sub, void *obj, const struct mosquitto_message *msg)
+void on_msg_sub(struct mosquitto *sub, void *obj, const struct mosquitto_message *msg)
 {
     printf("New message with topic %s: %s\n", msg->topic, (char *) msg->payload);
 }
@@ -46,7 +46,7 @@ int main()
 
     // function to continously receive msg from subed topic
     mosquitto_connect_callback_set(sub,on_connect);
-    mosquitto_message_callback_set(sub, msg_sub);
+    mosquitto_message_callback_set(sub, on_msg_sub);
 
 
     // New version of total algorithm
@@ -68,14 +68,16 @@ int main()
 
     do{
         printf("This is start of a new session\n");
-        printf("Please choose your role: 0) pub 1) sub: ");
-        scanf("%d", &role);
-        printf("Key check %d\n", role);
-        /*
+
         do {
+            printf("Please choose your role \n(0) pub (1) sub: ");
             scanf("%d", &role);
+            if((role != 0) && (role != 1))
+            {
+                printf("Please enter a correct value...\n\n");
+            }
         } while ((role != 0) && (role != 1));
-        */
+
 
         // now the role is choosed
         do{
@@ -89,13 +91,13 @@ int main()
                     printf("Failed to allocate heap sapce for payload\n");
                     return 1;
                 }
-                
-                printf("Please enter your choice: " );
+
+                printf("Please enter value to publish: " );
                 scanf("%s",payload);
                 
                 payloadLength = strlen(payload);
 
-                printf("%d\n", payloadLength);
+               
 
                 published = mosquitto_publish(pub,NULL,topic,payloadLength,payload,qos,retain);
 
@@ -107,7 +109,6 @@ int main()
                 else 
                 {
                     printf("Message published successfully\n");
-                    continue;
                 }
                 free(payload);
 
@@ -115,19 +116,20 @@ int main()
             else if(role == 1)
             {
                 // sub
-
+                printf("\n\nThis is place holder for sub\n\n");
+                mosquitto_loop(sub,0,1);
 
             }
 
             // out here when task is done, and update role
             role++;
             role = role % 2;
-            printf("\n\n single pub/sub ended, 0 to continue, 1 to stop: ");
+            printf("\n\nsingle pub/sub ended \n(0) to continue, (1) to stop: ");
             scanf("%d",&quit);
         } while (quit != 1);
         
 
-        printf("\n\nDo you want to start a new session?: 0)no 1) yes ");
+        printf("\n\nDo you want to start a new session?: \n(0)no (1) yes ");
         scanf("%d", &session);
 
     } while (session == 1);
